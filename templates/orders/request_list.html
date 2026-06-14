@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список заявок</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2 text-dark">Список заказов</h1>
+            <span class="badge bg-secondary">Всего заказов: {{ requests.count }}</span>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col" class="ps-4">Имя клиента</th>
+                            <th scope="col" class="ps-4">Телефон</th>
+                            <th scope="col" class="ps-4">Email</th>
+                            <th scope="col" class="ps-4">Статус</th>
+                            <th scope="col" class="ps-4">Тема обращения</th>
+                            <th scope="col" class="ps-4">Дата создания</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for request in requests %}
+                            <tr>
+                                <td class="ps-4 fw-bold">{{ request.client_name }}</td>
+                                <td>{{ request.phone }}</td>
+                                <td>
+                                    <a href="mailto:{{ request.email }}" class="text-decoration-none">{{ request.email }}</a>
+                                </td>
+                                <td>
+                                    {% if request.status == 'new' %}
+                                        <span class="badge bg-danger">Новая</span>
+                                    {% elif request.status == 'in_progress' %}
+                                        <span class="badge bg-warning text-dark">В работе</span>
+                                    {% elif request.status == 'completed' %}
+                                        <span class="badge bg-success">Выполнена</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ request.subject }}</td>
+                                <td class="pe-4 text-muted">{{ request.created_at|date:"d.m.Y H:i" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-muted">
+                                    Заявки пока отсутствуют.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
