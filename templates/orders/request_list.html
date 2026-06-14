@@ -62,7 +62,7 @@
                                     data-name="{{ request.client_name|lower }}"
                                     data-phone="{{ request.phone|lower }}"
                                     data-email="{{ request.email|lower }}">
-                                    <td class="ps-4 fw-bold">{{ request.client_name }}</td>
+                                    <td class="ps-4 fw-bold"><a href="{% url 'request_detail' request.id %}" class="text-decoration-none text-dark fw-bold">{{ request.client_name }}</a></td>
                                     <td>{{ request.phone }}</td>
                                     <td>
                                         <a href="mailto:{{ request.email }}" class="text-decoration-none">{{ request.email }}</a>
@@ -97,6 +97,39 @@
                     </div>
                 </div>
             </div>
+        {% if is_paginated %}
+        <nav aria-label="Навигация по страницам" class="mt-4">
+            <ul class="pagination justify-content-center shadow-sm">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-item" href="?page=1" class="page-link">&laquo; Первая</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Назад</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">&laquo; Первая</span></li>
+                    <li class="page-item disabled"><span class="page-link">Назад</span></li>
+                {% endif %}
+
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+                </li>
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Вперед</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">Вперед</span></li>
+                    <li class="page-item disabled"><span class="page-link">Последняя &raquo;</span></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
         </section>
     </main>
 

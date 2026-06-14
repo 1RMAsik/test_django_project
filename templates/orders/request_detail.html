@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Заявка №{{ req.id }} — Просмотр</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <div class="container mt-5" style="max-width: 800px;">
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="mb-4 d-flex justify-content-between align-items-center">
+            <a href="{% url 'request_list' %}" class="btn btn-outline-secondary">&larr; Вернуться к списку</a>
+            <span class="text-muted small">ID заявки: #{{ req.id }}</span>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-8">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-dark text-white py-3">
+                        <h1 class="h4 mb-0">{{ req.subject }}</h1>
+                    </div>
+                    <div class="card-body p-4">
+                        <h5 class="text-muted mb-2 small text-uppercase fw-bold">Текст обращения:</h5>
+                        <p class="card-text bg-white p-3 border rounded text-dark style-quote" style="white-space: pre-wrap;">{{ req.message }}</p>
+
+                        <div class="mt-4 pt-3 border-top text-muted small">
+                            Создано: {{ req.created_at|date:"d.m.Y в H:i" }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="h6 text-muted text-uppercase fw-bold mb-3">Клиент</h5>
+                        <p class="fw-bold mb-1">{{ req.client_name }}</p>
+                        <p class="mb-1 small"><a href="tel:{{ req.phone }}" class="text-decoration-none text-secondary">{{ req.phone }}</a></p>
+                        <p class="small"><a href="mailto:{{ req.email }}" class="text-decoration-none">{{ req.email }}</a></p>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0 text-white
+                    {% if req.status == 'new' %}bg-primary
+                    {% elif req.status == 'in_progress' %}bg-warning text-dark
+                    {% elif req.status == 'completed' %}bg-success{% endif %}">
+                    <div class="card-body p-4">
+                        <h5 class="h6 text-uppercase fw-bold mb-3 opacity-75">Текущий статус</h5>
+                        <div class="fs-4 fw-bold mb-4">
+                            {% if req.status == 'new' %}Новая
+                            {% elif req.status == 'in_progress' %}В работе
+                            {% elif req.status == 'completed' %}Выполнена{% endif %}
+                        </div>
+
+                        <form method="post" class="mt-2 pt-2 border-top border-light border-opacity-25">
+                            {% csrf_token %}
+                            <label for="statusSelect" class="form-label small opacity-75">Изменить статус:</label>
+                            <div class="input-group">
+                                <select class="form-select form-select-sm" id="statusSelect" name="status">
+                                    <option value="new" {% if req.status == 'new' %}selected{% endif %}>Новая</option>
+                                    <option value="in_progress" {% if req.status == 'in_progress' %}selected{% endif %}>В работе</option>
+                                    <option value="completed" {% if req.status == 'completed' %}selected{% endif %}>Выполнена</option>
+                                </select>
+                                <button class="btn btn-dark btn-sm" type="submit">ОК</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
